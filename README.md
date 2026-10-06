@@ -60,29 +60,19 @@ You are a code reviewer. Write the fixed procedure and the return format here.
 
 ## Codex 변환
 
-`scripts/build_codex.py`가 `<name>.md`를 Codex용 `<name>.toml`로 바꾼다. Python 3.12 이상, 표준 라이브러리만 쓴다.
+Codex용 `<name>.toml`은 원본 `<name>.md`에서 손으로 옮긴다. 옮기는 규칙은 다음과 같다.
 
 - `name`: kebab-case를 snake_case로 바꾼다(`code-reviewer` → `code_reviewer`).
 - `description`: 그대로 옮긴다.
 - `developer_instructions`: 본문 전체.
 - 나머지 키(`model`, `tools`, `readonly`)는 옮기지 않는다.
 
-```bash
-python3 scripts/build_codex.py                    # agents/*.md → codex/*.toml
-python3 scripts/build_codex.py --check            # 다르거나 없으면 1로 끝난다
-python3 scripts/build_codex.py ../plugin/clonamic-harness/agents --out .codex/agents
-```
-
-생성한 `.toml`은 손으로 고치지 않는다. 원본 `.md`를 고치고 다시 만든다.
+`.toml`만 따로 고치지 않는다. 원본 `.md`를 고친 뒤 같은 규칙으로 다시 옮긴다.
 
 ## 구조
 
 ```text
 subagents/
 ├── agents/<name>.md        # 독립 서브에이전트 원본 (생길 때 만든다)
-├── codex/<name>.toml       # build_codex.py 생성물
-├── scripts/build_codex.py
-└── tests/test_build_codex.py
+└── codex/<name>.toml       # 원본 .md에서 옮긴 Codex 형식
 ```
-
-시험: `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test*.py'`
